@@ -17,19 +17,21 @@ from pathlib import Path
 workdir = os.getcwd()
 print("cwd =", workdir)
 #set parameters to plot delta F
-REPNUM=21
+REPNUM=19
 STATENUM=5
 Sysname="PNMT"
 Statename=["lig1","lig4","lig6","lig7","lig10"]
 
 #set paths
-script_dir= os.path.abspath("__file__")
-print("Abs script dir path:", script_dir)
 
-in_file_dir= 'dsidler/Documents/PhD/EDS/Input_Analysis_Tools/Ana_Prog/'
+#syspath="pnmt/run_epot_offset_opts_no_RF/" #defines which system i.e. where to read and write data.
+#syspath="pnmt/run_e_offset_sereina_no_RF/"
+syspath="pnmt/run_no_offset_opts_no_RF/"
+
+in_file_dir='/Users/dsidler/Documents/PhD/EDS/Input_Analysis_Tools/Ana_Prog/'+syspath
 in_file_name='dfmult_all_diff_all_s.out' 
 
-out_file_dir='dsidler/Documents/PhD/EDS/Output_Analysis_Tools/Ana_Prog/'
+out_file_dir='/Users/dsidler/Documents/PhD/EDS/Output_Analysis_Tools/Ana_Prog/'+syspath
 
 file_path=os.path.join(in_file_dir,in_file_name)
 
@@ -76,49 +78,55 @@ for key,file in dictinfile.items():
 #%%
 #Plot Figures
 #Define some general Img Properties (fontsize etc)
-repID_plot=[1,6,8,9,10,11]
+#repID_plot=[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21]
 plot_color=["black","blue","green","red","magenta","cyan"]
-repID_plot_adjusted=[0,5,7,8,9,10]
-svalues=[1.0,0.18,0.089,0.063,0.044, 0.031]
+repID_plot_adjusted=[1]#,5,7,8,9,10]
+svalues=[1.0]#,0.18,0.089,0.063,0.044, 0.031]
+
+transition=[14, 16, 46, 17, 47, 67, 110, 410, 610, 710]
+#xpos=numpy.arange(len(transition))
+xpos=numpy.arange(0.5,10,1)
+print("xpos ", xpos)
 print(repID_plot_adjusted)
 
 
 #Plot figure of Free Energy
 fig1=plt.figure(figsize=(10,6),dpi=300)
+
 cID=0
 for rID in repID_plot_adjusted:
-    plt.plot(dF_ij[rID], color=plot_color[cID], linewidth=1, linestyle="-",marker="+",markersize=10,mew=9,label=("s="+str(svalues[cID])))
+    plt.bar(xpos,dF_ij[rID],yerr=dF_ij_err[rID],ecolor='r',tick_label=transition)#plot(dF_ij[rID], color=plot_color[cID], linewidth=1, linestyle="-",marker="+",markersize=10,mew=9,label=("s="+str(svalues[cID])))
     cID=cID+1
-    plt.show
+    plt.show()
 #print(dF_ij)
 #print(dF_ij_err)
 #print(ij_comb)
-plt.ylim(dF_ij.min(),dF_ij.max())
-plt.legend(loc="upper left")
-plt.ylabel("$\Delta F_{ij} $", fontsize=16)
-plt.xlabel("Endstate Transition ij", fontsize=16)
-plt.title("Free Energy Difference for all Endstate Transitions \n for changing smoothing Parameter s", fontsize=20)
-out_file_path1=os.path.join(out_file_dir,"dF_s_ID.eps")
+#plt.ylim(dF_ij[svalues].min(),dF_ij[svalues].max())
+#plt.legend(loc="upper left")
+#plt.ylabel("$\Delta F_{ij} $", fontsize=16)
+#plt.xlabel("State ij", fontsize=16)
+#plt.title("Free Energy Difference for 5 different pnmt inhibitors\n ", fontsize=20)
+out_file_path1=os.path.join(out_file_dir,"pmnt.eps")
 fig1.savefig(out_file_path1)
 
-#%%
-#Plot figure of Free Energy error
-fig2=plt.figure(figsize=(10,6),dpi=300)
-cID=0
-for rID in repID_plot_adjusted:
-    plt.plot(dF_ij_err[rID], color=plot_color[cID], linewidth=1, linestyle="-",marker="+",markersize=10,mew=9,label=("s="+str(svalues[cID])))
-    cID=cID+1
-    plt.show
-print(dF_ij)
-print(dF_ij_err)
-#print(ij_comb)
-plt.ylim(dF_ij_err.min(),dF_ij_err.max()*1.2)
-plt.legend(loc="upper left")
-plt.ylabel("Error $\Delta F_{ij} $", fontsize=16)
-plt.xlabel("Endstate Transition ij", fontsize=16)
-plt.title("Free Energy Difference Errors for all Endstate Transitions \n for changing smoothing Parameter s", fontsize=20)
-out_file_path2=os.path.join(out_file_dir,"dF_s_ID_err.eps")
-fig2.savefig(out_file_path2)
+##%%
+##Plot figure of Free Energy error
+#fig2=plt.figure(figsize=(10,6),dpi=300)
+#cID=0
+#for rID in repID_plot_adjusted:
+#    plt.plot(dF_ij_err[rID], color=plot_color[cID], linewidth=1, linestyle="-",marker="+",markersize=10,mew=9,label=("s="+str(svalues[cID])))
+#    cID=cID+1
+#    plt.show
+##print(dF_ij)
+##print(dF_ij_err)
+##print(ij_comb)
+#plt.ylim(dF_ij_err.min(),dF_ij_err.max()*1.2)
+#plt.legend(loc="upper left")
+#plt.ylabel("Error $\Delta F_{ij} $", fontsize=16)
+#plt.xlabel("Endstate Transition ij", fontsize=16)
+#plt.title("Free Energy Difference Errors for all Endstate Transitions \n for changing smoothing Parameter s", fontsize=20)
+#out_file_path2=os.path.join(out_file_dir,"dF_s_ID_err.eps")
+#fig2.savefig(out_file_path2)
 
 #%%
 
